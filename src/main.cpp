@@ -6,6 +6,7 @@
 #include <iostream>
 #include "NGLDraw.h"
 #include <ngl/NGLInit.h>
+#include <ngl/Transformation.h>
 
 /// @brief function to quit SDL with error message
 /// @param[in] _msg the error message to send
@@ -60,6 +61,7 @@ int main(int argc, char * argv[])
   bool quit=false;
   SDL_Event event;
   NGLDraw ngl;
+  ngl::Transformation M;
   while(!quit)
   {
 
@@ -92,13 +94,13 @@ int main(int argc, char * argv[])
         {
           switch( event.key.keysym.sym )
           {
-
-            case SDLK_a :  
-              //p1dir -= 1.0; will make paddle move in left direction
+ 
+            case SDLK_a :
+              //m_paddleTransform.addPosition(ngl::Vec3(1,0,0));//will make paddle move in left direction
               break;
 
             case SDLK_d :  
-              //p1dir += 1.0; will make paddle move in right direction
+              //m_paddleTransform.addPosition() +ngl::Vec3(1,0,0));//will make paddle move in right direction
               break;
 
             case SDLK_f :
@@ -117,10 +119,10 @@ int main(int argc, char * argv[])
         {
           switch(event.key.keysym.sym)
           {
-            case SDLK_a:
-            case SDLK_d: 
+            case SDLK_a: ngl.paddleMoveRight(true); break;
+            case SDLK_d: ngl.paddleMoveLeft(true); break;
             //When a or d are realised paddle stops moving 
-              //p1dir = 0; will make paddle stop moving 
+              //paddledir = 0; will make paddle stop moving 
               break;
           }//end of key process
           break;

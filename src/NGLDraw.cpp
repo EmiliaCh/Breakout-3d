@@ -104,11 +104,12 @@ void NGLDraw::draw()
   loadMatricesToShader();
 
   ngl::Mat4 M;
+  
 
   m_transform.reset(); //Paddle
   {
     m_transform.getMatrix();
-    m_transform.setPosition(0.0f,0.2f,0.0f); //Set start position of paddle 
+    m_transform.setPosition(m_paddleTransform.getPosition()); //Set start position of paddle 
     m_transform.setScale(2.0f, 0.3f, 1.0f);
     loadMatricesToShader();
     ngl::VAOPrimitives::draw("cube");
@@ -122,9 +123,134 @@ void NGLDraw::draw()
     m_transform.setScale(1.1f,0.4f,1.0f);
     loadMatricesToShader();
     ngl::VAOPrimitives::draw("cube");
-    /**/
+    /*brick array*/
 
   } // and before a pop
+
+  m_transform.reset(); //Brick
+  {
+    m_transform.getMatrix();
+    m_transform.setPosition(-2.5f,4.0f,0.0f); //Start of brick placement 
+    m_transform.setScale(1.1f,0.4f,1.0f);
+    loadMatricesToShader();
+    ngl::VAOPrimitives::draw("cube");
+    /*brick array*/
+
+  } // and before a pop
+
+  m_transform.reset(); //Brick
+  {
+    m_transform.getMatrix();
+    m_transform.setPosition(-1.0f,4.0f,0.0f); //Start of brick placement 
+    m_transform.setScale(1.1f,0.4f,1.0f);
+    loadMatricesToShader();
+    ngl::VAOPrimitives::draw("cube");
+    /*brick array*/
+
+  } // and before a pop
+
+  m_transform.reset(); //Brick
+  {
+    m_transform.getMatrix();
+    m_transform.setPosition(0.5f,4.0f,0.0f); //Start of brick placement 
+    m_transform.setScale(1.1f,0.4f,1.0f);
+    loadMatricesToShader();
+    ngl::VAOPrimitives::draw("cube");
+    /*brick array*/
+
+  } // and before a pop
+
+  m_transform.reset(); //Brick
+  {
+    m_transform.getMatrix();
+    m_transform.setPosition(2.0f,4.0f,0.0f); //Start of brick placement 
+    m_transform.setScale(1.1f,0.4f,1.0f);
+    loadMatricesToShader();
+    ngl::VAOPrimitives::draw("cube");
+    /*brick array*/
+
+  } // and before a pop
+
+  m_transform.reset(); //Brick
+  {
+    m_transform.getMatrix();
+    m_transform.setPosition(3.5f,4.0f,0.0f); //Start of brick placement 
+    m_transform.setScale(1.1f,0.4f,1.0f);
+    loadMatricesToShader();
+    ngl::VAOPrimitives::draw("cube");
+    /*brick array*/
+
+  } // and before a pop
+
+  m_transform.reset(); //Brick2
+  {
+    m_transform.getMatrix();
+    m_transform.setPosition(3.5f,3.0f,0.0f); //Start of brick placement 
+    m_transform.setScale(1.1f,0.4f,1.0f);
+    loadMatricesToShader();
+    ngl::VAOPrimitives::draw("cube");
+    /*brick array*/
+
+  } // and before a pop
+
+  m_transform.reset(); //Brick2
+  {
+    m_transform.getMatrix();
+    m_transform.setPosition(2.0f,3.0f,0.0f); //Start of brick placement 
+    m_transform.setScale(1.1f,0.4f,1.0f);
+    loadMatricesToShader();
+    ngl::VAOPrimitives::draw("cube");
+    /*brick array*/
+
+  } // and before a pop
+
+
+  m_transform.reset(); //Brick2
+  {
+    m_transform.getMatrix();
+    m_transform.setPosition(0.5f,3.0f,0.0f); //Start of brick placement 
+    m_transform.setScale(1.1f,0.4f,1.0f);
+    loadMatricesToShader();
+    ngl::VAOPrimitives::draw("cube");
+    /*brick array*/
+
+  } // and before a pop
+
+
+  m_transform.reset(); //Brick2
+  {
+    m_transform.getMatrix();
+    m_transform.setPosition(-1.0f,3.0f,0.0f); //Start of brick placement 
+    m_transform.setScale(1.1f,0.4f,1.0f);
+    loadMatricesToShader();
+    ngl::VAOPrimitives::draw("cube");
+    /*brick array*/
+
+  } // and before a pop
+
+  m_transform.reset(); //Brick2
+  {
+    m_transform.getMatrix();
+    m_transform.setPosition(-2.5f,3.0f,0.0f); //Start of brick placement 
+    m_transform.setScale(1.1f,0.4f,1.0f);
+    loadMatricesToShader();
+    ngl::VAOPrimitives::draw("cube");
+    /*brick array*/
+
+  } // and before a pop
+
+  m_transform.reset(); //Brick2
+  {
+    m_transform.getMatrix();
+    m_transform.setPosition(-4.0f,3.0f,0.0f); //Start of brick placement 
+    m_transform.setScale(1.1f,0.4f,1.0f);
+    loadMatricesToShader();
+    ngl::VAOPrimitives::draw("cube");
+    /*brick array*/
+
+  } // and before a pop
+
+
   m_transform.reset(); //Ball
   {
     m_transform.getMatrix();
@@ -157,6 +283,7 @@ void NGLDraw::loadMatricesToShader()
      ngl::Mat4 MVP;
      ngl::Mat4 normalMatrix;
      ngl::Mat4 M;
+     
    };
 
     transform t;
@@ -203,36 +330,42 @@ void NGLDraw::mouseMoveEvent (const SDL_MouseMotionEvent &_event)
 //----------------------------------------------------------------------------------------------------------------------
 void NGLDraw::mousePressEvent (const SDL_MouseButtonEvent &_event)
 {
-  // this method is called when the mouse button is pressed in this case we
-  // store the value where the maouse was clicked (x,y) and set the Rotate flag to true
-  if(_event.button == SDL_BUTTON_LEFT)
+  // this method is called when the mouse button is pressed 
+
+  if(_event.button == SDLK_a)
   {
-    m_origX = _event.x;
-    m_origY = _event.y;
-    m_rotate =true;
+    m_paddleTransform.addPosition(ngl::Vec3(1,0,0));
   }
-  // right mouse translate mode
-  else if(_event.button == SDL_BUTTON_RIGHT)
+
+  else if(_event.button == SDLK_d)
   {
-    m_origXPos = _event.x;
-    m_origYPos = _event.y;
-    m_translate=true;
+    m_paddleTransform.addPosition(ngl::Vec3(-1,0,0));
   }
+}
+
+void NGLDraw::paddleMoveRight(const SDL_MouseButtonEvent &_event)
+{
+  m_paddleTransform.addPosition(ngl::Vec3(0,0,0));
+}
+
+void NGLDraw::paddleMoveLeft(const SDL_MouseButtonEvent &_event)
+{
+  m_paddleTransform.addPosition(ngl::Vec3(0,0,0));
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 void NGLDraw::mouseReleaseEvent (const SDL_MouseButtonEvent &_event)
 {
   // this event is called when the mouse button is released
-  // we then set Rotate to false
-  if (_event.button == SDL_BUTTON_LEFT)
+
+  if (_event.button == SDLK_a)
   {
-    m_rotate=false;
+    m_paddleTransform.addPosition(ngl::Vec3(0,0,0));
   }
-  // right mouse translate mode
-  if (_event.button == SDL_BUTTON_RIGHT)
+
+  if (_event.button == SDLK_d)
   {
-    m_translate=false;
+    m_paddleTransform.addPosition(ngl::Vec3(0,0,0));
   }
 }
 
