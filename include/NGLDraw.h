@@ -24,6 +24,10 @@ class NGLDraw
     
     void mouseReleaseEvent (const SDL_MouseButtonEvent &_event);
   
+    void paddleMoveRight (const SDL_MouseButtonEvent &_event);
+
+    void paddleMoveLeft (const SDL_MouseButtonEvent &_event);
+
     void wheelEvent(const SDL_MouseWheelEvent &_event);
     
   private :
@@ -51,7 +55,8 @@ class NGLDraw
    
     ngl::Mat4 m_view;
     ngl::Mat4 m_project;
-   
+    ngl::Transformation m_paddleTransform;
+    
     ngl::Vec3 m_modelPos;
     
     int m_width;
