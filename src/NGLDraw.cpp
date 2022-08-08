@@ -10,6 +10,8 @@ constexpr static float s_paddleUpdate=0.2f;
 
 NGLDraw::NGLDraw()
 {
+ 
+  m_animate=true;
   m_rotate=true;
 
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);	   // Black Background Colour
@@ -92,11 +94,36 @@ void NGLDraw::resize(int _w, int _h)
 
 void NGLDraw::draw()
 {
+  int x;
+  int y;
 
   glViewport( 0, 0, m_width, m_height );
 
   // clear the screen and depth buffer
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+  if (m_ballTransform.getPosition().m_x - m_radius <= 0 )
+  {
+      m_ballTransform.getPosition().m_x = 0 + m_radius;
+      m_ballVelocity.m_x*= -1.0;
+  }
+  if (m_ballTransform.getPosition().m_x + m_radius >= m_width)
+  {
+    m_ballTransform.getPosition().m_x = m_width - m_radius;
+    m_ballVelocity.m_x*= -1.0;
+  }
+  if (m_ballTransform.getPosition().m_y - m_radius <= 0)
+  {
+    m_ballTransform.getPosition().m_y = 0 + m_radius;
+    m_ballVelocity.m_y*= -1.0;
+  }
+  if (m_ballTransform.getPosition().m_y + m_radius >= m_height)
+  {
+    m_ballTransform.getPosition().m_y = m_height - m_radius;
+    m_ballVelocity.m_y*= -1.0;
+  }
+
+  m_ballTransform.addPosition(m_ballVelocity);
 
 
   // draw
@@ -253,9 +280,11 @@ void NGLDraw::draw()
 
   m_transform.reset(); //Ball
   {
+
     m_transform.getMatrix();
-    m_transform.setPosition(0.0f,1.0f,0.0f); //Set start position
+    m_transform.setPosition(m_ballTransform.getPosition()); //Set start position
     m_transform.setScale(0.2f,0.2f,0.2f); //Makes it smaller
+
     
     loadMatricesToShader();
     ngl::VAOPrimitives::draw("sphere");
@@ -271,6 +300,18 @@ void NGLDraw::draw()
   ngl::ShaderLib::setUniform("normalMatrix",normalMatrix);
   ngl::VAOPrimitives::draw("floor"); //Floor
 
+
+}
+
+//move ball
+void NGLDraw::ballMove()
+{
+  // store the last position
+  m_lastPos=m_pos;
+  // update the current position
+  m_pos+=m_dir;
+  // get the next position
+  m_nextPos=m_pos+m_dir;
 
 }
 
@@ -297,6 +338,16 @@ void NGLDraw::loadMatricesToShader()
 }
 
 
+void NGLDraw::paddleMoveRight()
+{
+  m_paddleTransform.addPosition(ngl::Vec3(1,0,0)); 
+}
+
+
+void NGLDraw::paddleMoveLeft()
+{
+  m_paddleTransform.addPosition(ngl::Vec3(-1,0,0));
+}
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -326,34 +377,30 @@ void NGLDraw::mouseMoveEvent (const SDL_MouseMotionEvent &_event)
   }
 }
 
-
 //----------------------------------------------------------------------------------------------------------------------
 void NGLDraw::mousePressEvent (const SDL_MouseButtonEvent &_event)
 {
-  // this method is called when the mouse button is pressed 
-
-  if(_event.button == SDLK_a)
+  // this method is called when the mouse button is pressed in this case we
+  // store the value where the maouse was clicked (x,y) and set the Rotate flag to true
+  if(_event.button == SDL_BUTTON_LEFT)
   {
-    m_paddleTransform.addPosition(ngl::Vec3(1,0,0));
+    m_origX = _event.x;
+    m_origY = _event.y;
+    m_rotate =true;
   }
-
-  else if(_event.button == SDLK_d)
+  // right mouse translate mode
+  else if(_event.button == SDL_BUTTON_RIGHT)
   {
-    m_paddleTransform.addPosition(ngl::Vec3(-1,0,0));
+    m_origXPos = _event.x;
+    m_origYPos = _event.y;
+    m_translate=true;
   }
 }
 
-void NGLDraw::paddleMoveRight(const SDL_MouseButtonEvent &_event)
-{
-  m_paddleTransform.addPosition(ngl::Vec3(0,0,0));
-}
-
-void NGLDraw::paddleMoveLeft(const SDL_MouseButtonEvent &_event)
-{
-  m_paddleTransform.addPosition(ngl::Vec3(0,0,0));
-}
 
 //----------------------------------------------------------------------------------------------------------------------
+
+
 void NGLDraw::mouseReleaseEvent (const SDL_MouseButtonEvent &_event)
 {
   // this event is called when the mouse button is released
@@ -370,6 +417,8 @@ void NGLDraw::mouseReleaseEvent (const SDL_MouseButtonEvent &_event)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+
+
 void NGLDraw::wheelEvent(const SDL_MouseWheelEvent &_event)
 {
 

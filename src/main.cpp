@@ -20,6 +20,7 @@ SDL_GLContext createOpenGLContext( SDL_Window *window);
 int main(int argc, char * argv[])
 {
   //Paddle p1;
+  Uint32 timer;
 
   NGL_UNUSED(argc);
   NGL_UNUSED(argv);
@@ -44,6 +45,7 @@ int main(int argc, char * argv[])
     SDLErrorExit("Unable to create window");
   }
 
+  timer = SDL_GetTicks();
   // Create our opengl context
    SDL_GLContext glContext=createOpenGLContext(window);
    if(!glContext)
@@ -95,13 +97,14 @@ int main(int argc, char * argv[])
           switch( event.key.keysym.sym )
           {
  
-            case SDLK_a :
-              //m_paddleTransform.addPosition(ngl::Vec3(1,0,0));//will make paddle move in left direction
-              break;
+            
+            case SDLK_a: ngl.paddleMoveLeft();  
+              break;  //will make paddle move in left direction
 
-            case SDLK_d :  
-              //m_paddleTransform.addPosition() +ngl::Vec3(1,0,0));//will make paddle move in right direction
-              break;
+              
+            case SDLK_d: ngl.paddleMoveRight(); 
+              break;;  //will make paddle move in right direction
+              
 
             case SDLK_f :
             SDL_SetWindowFullscreen(window,SDL_TRUE); //Makes game fullscreen
@@ -119,8 +122,6 @@ int main(int argc, char * argv[])
         {
           switch(event.key.keysym.sym)
           {
-            case SDLK_a: ngl.paddleMoveRight(true); break;
-            case SDLK_d: ngl.paddleMoveLeft(true); break;
             //When a or d are realised paddle stops moving 
               //paddledir = 0; will make paddle stop moving 
               break;
@@ -137,6 +138,11 @@ int main(int argc, char * argv[])
     ngl.draw();
     // swap the buffers
     SDL_GL_SwapWindow(window);
+
+    {
+      Uint32 old = timer;
+      timer = SDL_GetTicks();
+    }
 
   }
   // tidy up and exit SDL
