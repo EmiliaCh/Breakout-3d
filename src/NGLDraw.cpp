@@ -10,9 +10,13 @@ constexpr static float s_paddleUpdate=0.2f;
 
 NGLDraw::NGLDraw()
 {
- 
+
+  m_ballVelocity = ngl::Vec3(1,1,0);
+  m_ballVelocity.normalize();
+  m_ballVelocity *= 0.05;
   m_animate=true;
   m_rotate=true;
+
 
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);	   // Black Background Colour
 
@@ -94,9 +98,7 @@ void NGLDraw::resize(int _w, int _h)
 
 void NGLDraw::draw()
 {
-  int x;
-  int y;
-
+  
   glViewport( 0, 0, m_width, m_height );
 
   // clear the screen and depth buffer
@@ -104,22 +106,22 @@ void NGLDraw::draw()
 
   if (m_ballTransform.getPosition().m_x - m_radius <= 0 )
   {
-      m_ballTransform.getPosition().m_x = 0 + m_radius;
+      m_ballTransform.setPosition(m_ballTransform.getPosition().m_x*-1, m_ballTransform.getPosition().m_y, m_ballTransform.getPosition().m_z);
       m_ballVelocity.m_x*= -1.0;
   }
   if (m_ballTransform.getPosition().m_x + m_radius >= m_width)
   {
-    m_ballTransform.getPosition().m_x = m_width - m_radius;
+    m_ballTransform.setPosition(m_ballTransform.getPosition().m_x*-1, m_ballTransform.getPosition().m_y, m_ballTransform.getPosition().m_z);
     m_ballVelocity.m_x*= -1.0;
   }
   if (m_ballTransform.getPosition().m_y - m_radius <= 0)
   {
-    m_ballTransform.getPosition().m_y = 0 + m_radius;
+    m_ballTransform.setPosition(m_ballTransform.getPosition().m_x, m_ballTransform.getPosition().m_y*-1, m_ballTransform.getPosition().m_z);
     m_ballVelocity.m_y*= -1.0;
   }
   if (m_ballTransform.getPosition().m_y + m_radius >= m_height)
   {
-    m_ballTransform.getPosition().m_y = m_height - m_radius;
+    m_ballTransform.setPosition(m_ballTransform.getPosition().m_x, m_ballTransform.getPosition().m_y*-1, m_ballTransform.getPosition().m_z);
     m_ballVelocity.m_y*= -1.0;
   }
 
