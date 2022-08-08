@@ -37,7 +37,7 @@ class NGLDraw
         /*! the position of the sphere */
     ngl::Vec3 m_pos;
     /*! the radius of the sphere */
-    GLfloat m_radius;
+    float m_radius;
     /*! flag to indicate if the sphere has been hit by ray */
     bool m_hit;
     // the direction of the sphere
