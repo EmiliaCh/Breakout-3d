@@ -24,14 +24,29 @@ class NGLDraw
     
     void mouseReleaseEvent (const SDL_MouseButtonEvent &_event);
   
-    void paddleMoveRight (const SDL_MouseButtonEvent &_event);
+    void paddleMoveRight ();
 
-    void paddleMoveLeft (const SDL_MouseButtonEvent &_event);
+    void paddleMoveLeft ();
+
+    void ballMove ();
 
     void wheelEvent(const SDL_MouseWheelEvent &_event);
     
   private :
     
+        /*! the position of the sphere */
+    ngl::Vec3 m_pos;
+    /*! the radius of the sphere */
+    GLfloat m_radius;
+    /*! flag to indicate if the sphere has been hit by ray */
+    bool m_hit;
+    // the direction of the sphere
+    ngl::Vec3 m_dir;
+    // the last position of the sphere
+    ngl::Vec3 m_lastPos;
+    // the next position of the sphere
+    ngl::Vec3 m_nextPos;
+
     void loadMatricesToShader();
     
     int m_spinXFace;
@@ -56,13 +71,18 @@ class NGLDraw
     ngl::Mat4 m_view;
     ngl::Mat4 m_project;
     ngl::Transformation m_paddleTransform;
+    ngl::Transformation m_ballTransform;
+    ngl::Vec3 m_ballVelocity;
+   
+    bool m_animate;
+    int m_rayUpdateTimer;
     
     ngl::Vec3 m_modelPos;
     
     int m_width;
     int m_height;
+    
 
-    void movePaddle();
 
 };
 
