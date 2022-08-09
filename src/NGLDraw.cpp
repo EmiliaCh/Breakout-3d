@@ -17,7 +17,6 @@ NGLDraw::NGLDraw()
   m_animate=true;
   m_rotate=true;
 
-
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);	   // Black Background Colour
 
   // enable depth testing for drawing
@@ -104,24 +103,41 @@ void NGLDraw::draw()
   // clear the screen and depth buffer
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-  if (m_ballTransform.getPosition().m_x - m_radius <= 0 )
+  
+
+  //ballXpaddle collision detection
+  if((m_ballTransform.getPosition().m_y+0.1 >= m_paddleTransform.getPosition().m_y-0.15) && (m_ballTransform.getPosition().m_y-0.1 <= m_paddleTransform.getPosition().m_y+0.15) )
   {
-      m_ballTransform.setPosition(m_ballTransform.getPosition().m_x*-1, m_ballTransform.getPosition().m_y, m_ballTransform.getPosition().m_z);
+    if ((m_ballTransform.getPosition().m_x+0.1 > m_paddleTransform.getPosition().m_x-1) && (m_ballTransform.getPosition().m_x-0.1 < m_paddleTransform.getPosition().m_x-1))
+    {
+      m_ballVelocity.m_y*= -1.0;
+    }
+    if ((m_ballTransform.getPosition().m_x+0.1 == m_paddleTransform.getPosition().m_x-1) && (m_ballTransform.getPosition().m_x+0.1 == m_paddleTransform.getPosition().m_x+1))
+    {
+      m_ballVelocity.m_x*= -1.0;
+    }
+  }
+  
+
+  //ballXwindow collision detection
+  if (m_ballTransform.getPosition().m_x - m_radius <= -5)
+  {
+      m_ballTransform.setPosition(m_ballTransform.getPosition().m_x+1, m_ballTransform.getPosition().m_y, m_ballTransform.getPosition().m_z);
       m_ballVelocity.m_x*= -1.0;
   }
-  if (m_ballTransform.getPosition().m_x + m_radius >= m_width)
+  if (m_ballTransform.getPosition().m_x + m_radius >= 5)
   {
-    m_ballTransform.setPosition(m_ballTransform.getPosition().m_x*-1, m_ballTransform.getPosition().m_y, m_ballTransform.getPosition().m_z);
+    m_ballTransform.setPosition(m_ballTransform.getPosition().m_x-1, m_ballTransform.getPosition().m_y, m_ballTransform.getPosition().m_z);
     m_ballVelocity.m_x*= -1.0;
   }
-  if (m_ballTransform.getPosition().m_y - m_radius <= 0)
+  if (m_ballTransform.getPosition().m_y - m_radius <= -1)
   {
-    m_ballTransform.setPosition(m_ballTransform.getPosition().m_x, m_ballTransform.getPosition().m_y*-1, m_ballTransform.getPosition().m_z);
+    m_ballTransform.setPosition(m_ballTransform.getPosition().m_x, m_ballTransform.getPosition().m_y+1, m_ballTransform.getPosition().m_z);
     m_ballVelocity.m_y*= -1.0;
   }
-  if (m_ballTransform.getPosition().m_y + m_radius >= m_height)
+  if (m_ballTransform.getPosition().m_y + m_radius >= 5)
   {
-    m_ballTransform.setPosition(m_ballTransform.getPosition().m_x, m_ballTransform.getPosition().m_y*-1, m_ballTransform.getPosition().m_z);
+    m_ballTransform.setPosition(m_ballTransform.getPosition().m_x, m_ballTransform.getPosition().m_y-1, m_ballTransform.getPosition().m_z);
     m_ballVelocity.m_y*= -1.0;
   }
 
@@ -144,6 +160,7 @@ void NGLDraw::draw()
     ngl::VAOPrimitives::draw("cube");
 
   } // and before a pop
+
 
   m_transform.reset(); //Brick
   {
@@ -302,18 +319,6 @@ void NGLDraw::draw()
   ngl::ShaderLib::setUniform("normalMatrix",normalMatrix);
   ngl::VAOPrimitives::draw("floor"); //Floor
 
-
-}
-
-//move ball
-void NGLDraw::ballMove()
-{
-  // store the last position
-  m_lastPos=m_pos;
-  // update the current position
-  m_pos+=m_dir;
-  // get the next position
-  m_nextPos=m_pos+m_dir;
 
 }
 
